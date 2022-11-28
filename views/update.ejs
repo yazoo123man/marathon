@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <form action="/chose" method="post">
+      <label for="checkpoints">Checkpoint: </label>
+      <select name="checkpoints">
+        <% array.forEach(function(element){%>
+          <option value="<%=element.Point%>"><%=element.Point%></option>
+        <%})%>
+      </select>
+      <button type="submit" name="button">Submit</button>
+    </form>
+  </body>
+</html>

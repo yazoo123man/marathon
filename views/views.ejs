@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <h1><%=message%></h1>
+    <form action="/views" method="post">
+      <label for="Number">Enter your Number here</label>
+      <input type="number" name="Number">
+      <input type="submit" name="search" value="one">
+      <label for="catagory">Sort by catagory: </label>
+      <select  name="catagory">
+          <option value="Mens">Men's</option>
+          <option value="Women">Women's</option>
+          <option value="Junior">Junior</option>
+          <option value="Senior">Senior</option>
+          <option value="Disable">Disable</option>
+          <option value="Staffmen">Staff Men's</option>
+          <option value="Staffwomen">Staff Women's</option>
+      </select>
+      <input type="submit" name="search" value="two">
+    </form>
+    <h1>Score board</h1>
+    <% array.forEach(function(element){%>
+    <%  if(element.time!=null){ %>
+        <h1><%=element.position%> : <%=element.catagoryPosition%> : <%=element.name%> : <%=element.time%>: <%=element.second%></h1>
+    <%}})%>
+  </body>
+</html>

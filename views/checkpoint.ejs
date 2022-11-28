@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <%=message%>
+    <h1>Checkpoint: <%=checkpoint%></h1>
+    <form action="/chose/<%=checkpoint%>" method="post">
+      <label for="number">Enter Number: </label>
+      <input type="number" name="number">
+      <input type="hidden" name="check" value="<%=checkpoint%>">
+      <button type="submit" name="button">Submit</button>
+    </form>
+  </body>
+</html>

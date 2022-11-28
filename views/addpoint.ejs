@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <script>
+    function validateForm() {
+      var x = document.forms["myForm"]["point"].value;
+      if (x == "" || x == null) {
+        alert("Name must be filled out");
+        return false;
+      }
+    }
+  </script>
+</head>
+
+<body>
+  
+  <form action="/addpoint" name="myForm"  onsubmit="return validateForm()" autocomplete="off" method="post" required>
+    <label for="Checkpoint">Checkpoint: </label>
+    <input type="text" name="point">
+    <button type="submit" name="button">Submit</button>
+  </form>
+</body>
+
+</html>
