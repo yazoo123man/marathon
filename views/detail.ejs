@@ -1,13 +1,48 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
+<%- include("partials/header"); -%>
+
+<table class="table table-striped table-hover ">
+  <thead>
+    <tr>
+      <th scope="col" class="left" style="width: 20%;">Position</th>
+      <th scope="col">Catagory</th>
+      <th scope="col">Pos</th>
+      <th scope="col">Name</th>
+      <th scope="col">Number</th>
+      <th scope="col">Time</th>
+    </tr>
+  </thead>
+  <tbody>
+
     <% array.forEach(function(element){%>
-    <%  if(element.time!=null){ %>
-        <h3><%=element%></h3>
-    <%}})%>
-  </body>
+    <tr href="/detail/<%=element._id%>">
+      <th scope="row"><%=element.position%></th>
+      <td><%=element.catagory%></td>
+      <td><%=element.catagoryPosition%></td>
+      <td><%=element.name%></td>
+      <td><%=element.number%> </td>
+      <td><%=element.time%>: <%=element.second%></td>
+    </tr>
+    <%})%>
+
+  </tbody>
+</table>
+
+<table class="table table-striped table-hover" style="width: 50%">
+
+  <thead>
+    <tr>
+      <th scope="col">Checkpoint</th>
+      <th scope="col">Time</th>
+    </tr>
+  </thead>
+  <% array2.forEach(function(element){%>
+  <tr>
+    <td><%=element.Point%></td>
+    <td><%=element.time%> : <%=element.second%></td>
+  </tr>
+  <%})%>
+</table>
+
+</body>
+
 </html>

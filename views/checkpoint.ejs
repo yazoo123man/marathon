@@ -1,17 +1,28 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
+<%- include("partials/header"); -%>
+
     <%=message%>
-    <h1>Checkpoint: <%=checkpoint%></h1>
+    <div class="container">
+    <form action="/chose/<%=checkpoint%>" method="post"  autocomplete="off"  style="width: 50%;" >
+      <fieldset>
+
+     <legend><strong>Checkpoint: <%=checkpoint%></strong></legend>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="number">Enter Number</label>
+          <input type="number" class="form-control" placeholder="Number" name="number">
+        </div>
+        <input type="hidden" name="check" value="<%=checkpoint%>">
+      </div>
+      <button type="submit" class="btn btn-primary" name="button">Submit</button>
+      </fieldset>
+      </form>
+      </div>
+    <!-- <h1>Checkpoint: <%=checkpoint%> </h1>
     <form action="/chose/<%=checkpoint%>" method="post">
       <label for="number">Enter Number: </label>
       <input type="number" name="number">
       <input type="hidden" name="check" value="<%=checkpoint%>">
       <button type="submit" name="button">Submit</button>
-    </form>
+    </form> -->
   </body>
 </html>

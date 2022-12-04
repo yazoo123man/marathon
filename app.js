@@ -7,8 +7,7 @@ const passport = require("passport")
 const passportLocalMongoose = require('passport-local-mongoose');
 
 const app = express();
-var on = true;
-var today1 = new Date();
+var on = false;
 var start = ""
 
 app.set('view engine', 'ejs');
@@ -24,7 +23,7 @@ app.use(session({
 }))
 app.use(passport.initialize());
 app.use(passport.session());
-mongoose.connect('mongodb://127.0.0.1/marathon22', {
+mongoose.connect('mongodb+srv://sxc20221217:This2001212isP%40ssowrd@cluster0.4qmjqug.mongodb.net/?retryWrites=true&w=majority/marathon', {
   useNewUrlParser: true
 }, (err) => {
   if (!err) console.log("dbconnected");
@@ -32,11 +31,19 @@ mongoose.connect('mongodb://127.0.0.1/marathon22', {
 })
 // this is userSchema
 const userSchema = new mongoose.Schema({
-  email: String,
-  password: String
+  username: String,
+  password: String,
+  admin: String,
+  point: String
 });
 userSchema.plugin(passportLocalMongoose);
 
+const User = mongoose.model("User", userSchema);
+
+passport.use(User.createStrategy());
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 //for starting time
 const timeSchema = new mongoose.Schema({
   id: Number,
@@ -72,14 +79,85 @@ const infoSchema = new mongoose.Schema({
 })
 
 const Info = mongoose.model("Info", infoSchema);
-//this the current home page for registration
-app.get("/", function(req, res) {
-  res.render("home.ejs", {
+//this is for registration
+app.get("/adminregister", function(req, res) {
+  // res.render("register");
+    if (req.isAuthenticated()) {
+      if (req.user.admin === "yes") {
+         {
+          res.render("register");
+        }
+      } else {
+          res.render("privilege");
+      }
+    } else {
+      res.render("login", {
+        msg: "The user is not registered"
+      });
+    }
+})
+app.post("/adminregister", function(req, res) {
+  User.register({
+    username: req.body.username,
+    admin: req.body.admin
+  }, req.body.password, function(err, user) {
+    if (err) {
+      console.log(err);
+      res.redirect("/register");
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        res.redirect("/");
+      })
+    }
+  })
+})
+// this is for login
+app.get("/login", function(req, res) {
+  res.render("login", {
     msg: ""
   });
 })
 
-app.post("/", function(req, res) {
+app.post("/login", function(req, res) {
+  const user = new User({
+    username: req.body.username,
+    password: req.body.password
+  });
+
+  req.login(user, function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        res.redirect("/");
+      })
+    }
+  })
+})
+//this the current home page for registration
+app.get("/", function(req, res){
+  res.render("realhome.ejs");
+})
+app.get("/register", function(req, res) {
+  if (req.isAuthenticated()) {
+    if (req.user.admin === "yes") {
+       {
+        res.render("home.ejs", {
+          msg: ""
+        });
+      }
+    } else {
+      res.render("privilege");
+    }
+  } else {
+    res.render("login", {
+      msg: "The user is not registered"
+    });
+  }
+
+})
+
+app.post("/register", function(req, res) {
   const name = req.body.Name;
   const age = req.body.age;
   const sex = req.body.sex;
@@ -90,7 +168,7 @@ app.post("/", function(req, res) {
   }, function(err, theOne) {
     var succcess = ""
     if (theOne == null) {
-      console.log("this is good");
+
 
       const info = new Info({
         name: name,
@@ -109,9 +187,7 @@ app.post("/", function(req, res) {
         msg: succcess
       })
     } else {
-      console.log("this is bad");
-      succcess = "this shit exits";
-      console.log(succcess);
+      succcess = "This number exists";
       res.render("home", {
         msg: succcess
       })
@@ -121,20 +197,33 @@ app.post("/", function(req, res) {
 })
 //this is to add checkpoint by the admin
 app.get("/addpoint", function(req, res) {
-  res.render("addpoint.ejs")
+  if (req.isAuthenticated()) {
+    if (req.user.admin === "yes") {
+      {
+        res.render("addpoint.ejs");
+      }
+    } else {
+      res.render("privilege");
+    }
+  } else {
+    res.render("login", {
+      msg: "The user is not registered"
+    });
+  }
+
+
 });
 app.post("/addpoint", function(req, res) {
   Check.findOne({
     Point: req.body.point
   }, function(err, one) {
     if (one == null) {
-      console.log("this is good");
       const look = new Check({
         Point: req.body.point
       })
       look.save(function(err) {
         if (err) {
-          console.log("there was an error");
+          console.log(err);
           res.redirect("/addpoint")
         }
       })
@@ -148,28 +237,66 @@ app.post("/addpoint", function(req, res) {
 
 // this is for chose checkpoint for update
 app.get("/chose", function(req, res) {
-  Check.find(function(err, array) {
-    if (!err) {
-      res.render("update.ejs", {
-        array: array
+  if (req.isAuthenticated()) {
+    if (req.user.admin === "yes") {
+
+      Check.find(function(err, array) {
+        if (!err) {
+          User.find(function(err, userArray) {
+            if (!err) {
+              res.render("update.ejs", {
+                array: array,
+                userArray: userArray
+              })
+            }
+          })
+
+        }
       })
+    } else {
+      res.redirect("/chose/" + req.user._id);
     }
-  })
+  } else {
+    res.render("login", {
+      msg: "The user is not registered"
+    });
+  }
+
 })
 
 app.post("/chose", function(req, res) {
   const chose = req.body.checkpoints;
-  console.log(chose);
-  res.redirect("/chose/" + chose)
+  const nameUser = req.body.users;
+  User.findOne({
+    username: nameUser
+  }, function(err, look) {
+    look.point = chose;
+    look.save();
+    res.redirect("/chose");
+  })
 })
 //this is to set and store the global time
 app.get("/settime", function(req, res) {
-  res.render("start.ejs", {
-    message: ""
-  })
+  if (req.isAuthenticated()) {
+    if (req.user.admin === "yes") {
+      {
+        res.render("start.ejs", {
+          message: ""
+        })
+      }
+    } else {
+      res.render("privilege");
+    }
+  } else {
+    res.render("login", {
+      msg: "The user is not registered"
+    });
+  }
+
 })
 
 app.post("/settime", function(req, res) {
+  var today1 = new Date();
   const check = req.body.value
   if (check === "Start") {
     if (on) {
@@ -208,10 +335,13 @@ app.post("/settime", function(req, res) {
 })
 //this is to add time to the checkpoint
 app.get("/chose/:topic", function(req, res) {
-  res.render("checkpoint.ejs", {
-    message: "",
-    checkpoint: req.params.topic
-  })
+  if (req.isAuthenticated()) {
+    res.render("checkpoint.ejs", {
+      message: "",
+      checkpoint: req.user.point
+    })
+
+  }
 })
 
 app.post("/chose/:topic", function(req, res) {
@@ -225,11 +355,18 @@ app.post("/chose/:topic", function(req, res) {
     if (look == null) {
       res.render("checkpoint", {
         message: "Error!!! Marathon time is not set",
-        checkpoint: req.params.topic
+        checkpoint: req.user.point
       })
     } else {
+      if(today.getSeconds()>look.second)
+      {
+          second = 0 + today.getSeconds()-look.second
+      }
+      else {
+        second = 0 + look.second-today.getSeconds()
+      }
       time = time + (today.getHours() * 60 + today.getMinutes()) - look.minute //this is for the time need to change later
-      second = 0 + today.getSeconds()
+
       manKind()
     }
   })
@@ -282,7 +419,7 @@ app.post("/chose/:topic", function(req, res) {
             look.time = time
             look.second = second
             look.save()
-            res.redirect("/chose/" + req.params.topic)
+            res.redirect("/chose/" + req.user._id)
           } else {
             res.render("checkpoint", {
               message: "Given players race is complete",
@@ -303,24 +440,26 @@ app.get("/views", function(req, res) {
     second: 1
   }).exec((err, docs) => {
     var pos = 1,
-      mpos = 1,
+      mpos = 1,//above 30
       wpos = 1,
-      smpos = 1,
-      swpos = 1,
+      bmpos = 1,//below 30
+      bwpos = 1,
       jpos = 1,
       spos = 1,
       dpos = 1;
+      propos=1;
+      staf=1;
     docs.forEach(function(element) {
       if (element.time != null) {
 
         element.position = pos
         pos++
         switch (element.catagory) {
-          case "Mens":
+          case "Mens+":
             element.catagoryPosition = mpos;
             mpos++;
             break;
-          case "Women":
+          case "Women+":
             element.catagoryPosition = wpos;
             wpos++;
             break;
@@ -336,13 +475,21 @@ app.get("/views", function(req, res) {
             element.catagoryPosition = dpos;
             dpos++;
             break;
-          case "Staffmen":
-            element.catagoryPosition = smpos;
-            smpos++;
+          case "Mens":
+            element.catagoryPosition = bmpos;
+            bmpos++;
             break;
-          case "Staffwomen":
-            element.catagoryPosition = swpos;
-            swpos++;
+          case "Women":
+            element.catagoryPosition = bwpos;
+            bwpos++;
+            break;
+            case "Pro":
+            element.catagoryPosition=propos;
+            propos++;
+            break;
+          case "Staff":
+            element.catagoryPosition=staf;
+            staf++;
             break;
           default:
             console.log("This is default");
@@ -360,7 +507,7 @@ app.get("/views", function(req, res) {
 
 app.post("/views", function(req, res) {
   const one = req.body.search;
-  const catagory= req.body.catagory;
+  const catagory = req.body.catagory;
   if (one === "one") {
     const number = req.body.Number
     Info.findOne({
@@ -369,6 +516,10 @@ app.post("/views", function(req, res) {
       if (err) {
         console.log("there was an error");
       } else if (look == null) {
+        res.render("views", {
+          message: "Number doesn't Exists",
+          array: []
+        })
         Info.find({}).sort({
           time: 1,
           second: 1
@@ -386,23 +537,91 @@ app.post("/views", function(req, res) {
       }
     })
   }
-  if(one==="two")
-  {
-    Info.find({catagory: catagory}, function(err, array)
-  {
-    res.render("views", {
-      message: "",
-      array: array
+  if (one === "two") {
+    Info.find({
+      catagory: catagory
+    }).sort({
+      time: 1,
+      second: 1
+    }).exec((err, docs) => {
+      res.render("views", {
+        message: "",
+        array: docs
+      })
     })
-  })
+  }
+})
+app.get("/delete", function(req, res){
+  if (req.isAuthenticated()) {
+    if (req.user.admin === "yes") {
+
+      Check.find(function(err, array) {
+        if (!err) {
+          User.find(function(err, userArray) {
+            if (!err) {
+              res.render("delect.ejs")
+            }
+          })
+
+        }
+      })
+    } else {
+      res.render("privilege");
+    }
+  } else {
+    res.render("login", {
+      msg: "The user is not registered"
+    });
   }
 })
 
-app.get("/detail", function(req, res){
-  Info.find(function(err, array){
-      res.render("detail", {array: array})
-  })
+app.post("/delete", function(req, res){
+  const number=req.body.delnumber;
+  Info.findOneAndDelete({number: number}, function(err, one)
+{
+  if(!err)
+  {
+    console.log(one);
+  }
+}) // executes
+res.redirect("/delete")
 
+})
+app.get("/logout", function(req, res){
+  req.logout(function(err){
+    if(err){
+      console.log(err);
+    }
+  });
+  res.redirect("/");
+})
+// app.get("/detail", function(req, res) {
+//
+//   Info.find(function(err, array) {
+//     res.render("detail", {
+//       array: array
+//     })
+//   })
+//
+// })
+
+app.get("/detail/:topic", function(req, res){
+  Info.findById(req.params.topic, function(err, array) {
+    if(err)
+    {
+      res.redirect("/views");
+    }
+    else if(array==null)
+    {
+      res.redirect("/views");
+    }
+    else{
+
+    res.render("detail", {
+      array: [array],
+      array2: array.checkpoints
+    })}
+  })
 })
 app.listen(3000, function() {
   console.log("server has started");

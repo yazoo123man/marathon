@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
+<%- include("partials/header"); -%>
     <h1> <%=message%> </h1>
+    <div class="container">
     <form  action="/settime" method="post">
-        <input type="submit" name="value" value="Start">
-        <input type="submit" name="value" value="Restart">
+        <button type="submit" class="btn btn-primary" name="value" value="Start">Start</button>
+        <button type="submit" class="btn btn-primary" name="value" value="Restart">Reset</button>
     </form>
+    </div>
   </body>
 </html>

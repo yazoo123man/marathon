@@ -1,0 +1,33 @@
+td,th
+{
+  text-align: center;
+}
+
+body {
+  background-color: #E8ECEF;
+}
+
+.centered {
+    padding-top: 200px;
+    text-align: center;
+}
+
+.secret-text {
+  text-align: center;
+  font-size: 2rem;
+  color: #fff;
+  background-color: #000;
+}
+
+.left
+{
+  text-align: left;
+}
+.one
+{
+  color: #9b9d9e;
+}
+.one:hover
+{
+  color: #ffffff;
+}

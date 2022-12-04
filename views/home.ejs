@@ -1,12 +1,84 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <h1><%=msg%></h1>
-      <form action="/" method="post" autocomplete="off">
+<%- include("partials/header"); -%>
+<h1><%=msg%></h1>
+<script>
+  function validateForm() {
+    let x = document.forms["myForm"]["Name"].value;
+    let y = document.forms["myForm"]["age"].value;
+    let z = document.forms["myForm"]["Number"].value;
+    if (x == "") {
+      alert("Name must be filled out");
+      return false;
+    }
+    if (y == "") {
+      alert("Age must be filled out");
+      return false;
+    }
+    if (z == "") {
+      alert("Number must be filled out");
+      return false;
+    }
+  }
+</script>
+
+
+
+<div class="container">
+
+
+<form action="/register" method="post" name="myForm" autocomplete="off" onsubmit="return validateForm()" style="width: 50%; ">
+  <fieldset>
+
+ <legend><strong>Registration</strong></legend>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="Name">Name</label>
+      <input type="text" class="form-control" placeholder="Name" name="Name">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="age">Age</label>
+      <input type="number" class="form-control" placeholder="Age" name="age" min="8" max="80">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <label for="sex">Sex</label>
+      <select name="sex" class="form-control">
+        <option selected>Choose...</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Others">Others</option>
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="Number">Number</label>
+      <input type="number" class="form-control" name="Number">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="catagory">Catagory</label>
+      <select name="catagory" class="form-control">
+        <option selected>Choose...</option>
+        <option value="Mens+">Men's above 30</option>
+        <option value="Women+">Women's above 30</option>
+        <option value="Mens">Men's below 30</option>
+        <option value="Women">Women's below 30</option>
+        <option value="Junior">Junior</option>
+        <option value="Senior">Senior</option>
+        <option value="Disable">Disable</option>
+        <option value="Staff">College Staff</option>
+        <option value="Pro">Professional</option>
+      </select>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary" name="button">Submit</button>
+  </fieldset>
+</form>
+</div>
+
+
+
+
+
+<!-- <form action="/" method="post" name="myForm" autocomplete="off" onsubmit="return validateForm()">
         <label for="Name">Name: </label>
         <input type="text" name="Name">
         <label for="age">Age: </label>
@@ -21,15 +93,18 @@
         <input type="number" name="Number">
         <label for="catagory">catagory</label>
         <select  name="catagory">
-            <option value="Mens">Men's</option>
-            <option value="Women">Women's</option>
+            <option value="Mens+">Men's above 30</option>
+            <option value="Women+">Women's above 30</option>
+            <option value="Mens">Men's below 30</option>
+            <option value="Women">Women's below 30</option>
             <option value="Junior">Junior</option>
             <option value="Senior">Senior</option>
             <option value="Disable">Disable</option>
-            <option value="Staffmen">Staff Men's</option>
-            <option value="Staffwomen">Staff Women's</option>
+            <option value="Staff">College Staff</option>
+            <option value="Pro">Professional</option>
         </select>
         <button type="submit" name="button">Submit</button>
-      </form>
-  </body>
+      </form> -->
+</body>
+
 </html>

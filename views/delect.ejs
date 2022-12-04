@@ -1,0 +1,28 @@
+<%- include("partials/header"); -%>
+<div class="container">
+
+
+<form action="/delete" method="post" name="myForm" autocomplete="off" onsubmit="return validateForm()" style="width: 50%; ">
+  <fieldset>
+
+ <legend><strong>Delete</strong></legend>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="delnumber">Number</label>
+      <input type="number" class="form-control" placeholder="number" name="delnumber">
+    </div>
+    <button type="submit" class="btn btn-primary" name="button">Submit</button>
+    </div>
+    </fieldset>
+    </form>
+    </div>
+
+
+
+    <!-- <form  action="/delete" method="post">
+      <label for="delnumber">Enter Number Here: </label>
+      <input type="number" name="delnumber">
+      <button type="submit" name="button">Done</button>
+    </form> -->
+  </body>
+</html>

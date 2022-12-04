@@ -1,27 +1,33 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-
-<head>
-  <meta charset="utf-8">
-  <title></title>
+<%- include("partials/header"); -%>
   <script>
     function validateForm() {
       var x = document.forms["myForm"]["point"].value;
       if (x == "" || x == null) {
-        alert("Name must be filled out");
+        alert("Checkpoint must be filled out");
         return false;
       }
     }
   </script>
-</head>
+  <div class="container">
+  <form action="/addpoint" method="post" name="myForm" autocomplete="off" onsubmit="return validateForm()" style="width: 50%" >
+    <fieldset>
 
-<body>
-  
-  <form action="/addpoint" name="myForm"  onsubmit="return validateForm()" autocomplete="off" method="post" required>
+   <legend><strong>Checkpoint</strong></legend>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <input type="text" class="form-control" placeholder="Name" name="point">
+      </div>
+
+      </div>
+      <button type="submit" class="btn btn-primary" name="button">Submit</button>
+    </fieldset>
+    </form>
+</div>
+  <!-- <form action="/addpoint" name="myForm"  onsubmit="return validateForm()" autocomplete="off" method="post" required>
     <label for="Checkpoint">Checkpoint: </label>
     <input type="text" name="point">
     <button type="submit" name="button">Submit</button>
-  </form>
+  </form> -->
 </body>
 
 </html>
